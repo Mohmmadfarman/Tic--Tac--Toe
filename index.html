@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <style>
+      *{
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+      }
+    </style>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+<h1>Tic Tac Toe</h1>
+<div id="board"></div>
+<button id="restart">Restart</button>
+
+<script>
+    const board = document.getElementById('board');
+    const restartButton = document.getElementById('restart');
+    let currentPlayer = 'X';
+    let gameBoard = ['', '', '', '', '', '', '', '', ''];
+    let gameActive = true;
+
+    function checkWinner() {
+        const winPatterns = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8],  // Rows
+            [0, 3, 6], [1, 4, 7], [2, 5, 8],  // Columns
+            [0, 4, 8], [2, 4, 6]              // Diagonals
+        ];
+
+        for (const pattern of winPatterns) {
+            const [a, b, c] = pattern;
+            if (gameBoard[a] && gameBoard[a] === gameBoard[b] && gameBoard[a] === gameBoard[c]) {
+                return gameBoard[a];
+            }
+        }
+
+        return null;
+    }
+
+    function handleCellClick(index) {
+        if (!gameBoard[index] && gameActive) {
+            gameBoard[index] = currentPlayer;
+            document.getElementById(`cell${index}`).innerText = currentPlayer;
+
+            const winner = checkWinner();
+            if (winner) {
+                alert(`Player ${winner} wins!`);
+                gameActive = false;
+            } else if (!gameBoard.includes('')) {
+                alert('It\'s a tie!');
+                gameActive = false;
+            } else {
+                currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            }
+        }
+    }
+
+    function restartGame() {
+        gameBoard = ['', '', '', '', '', '', '', '', ''];
+        gameActive = true;
+        currentPlayer = 'X';
+
+        // Clear board
+        for (let i = 0; i < 9; i++) {
+            document.getElementById(`cell${i}`).innerText = '';
+        }
+    }
+
+    function initializeBoard() {
+        for (let i = 0; i < 9; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'cell';
+            cell.id = `cell${i}`;
+            cell.addEventListener('click', () => handleCellClick(i));
+            board.appendChild(cell);
+        }
+
+        restartButton.addEventListener('click', restartGame);
+    }
+
+    initializeBoard();
+</script>
+
+</body>
+</html>
